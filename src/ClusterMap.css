@@ -1,0 +1,12 @@
+.ClusterMap {
+    height: 100vh;
+    text-align: center;
+}
+
+.mapboxgl-map {
+    height: 100%;
+}
+
+.mapboxgl-popup {
+    z-index: 999;
+}
