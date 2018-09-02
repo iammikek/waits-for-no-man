@@ -1,0 +1,36 @@
+.App-intro {
+    font-size: 1.4rem;
+}
+
+.container {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.container > li {
+    flex: 1;
+
+}
+
+.container > li  a {
+    border: 1px solid red;
+    display: block;
+    text-align: center;
+}
+
+@media all and (max-width: 400px) {
+    .container > li {
+        flex-basis: 100%;
+    }
+    .search {
+        order: 1;
+    }
+}
+
+.marker {
+    border: 10px solid red;
+    width: 10px;
+    height: 10px;
+}
