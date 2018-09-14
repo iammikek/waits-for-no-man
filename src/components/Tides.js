@@ -1,21 +1,21 @@
-import React, {Component} from "react";
+import React, {Component} from "react"
+import TideEvent from "./TideEvent"
 
-import TideEvent from "./TideEvent";
+import ReactChartkick, { LineChart, PieChart } from 'react-chartkick'
+import Chart from 'chart.js'
+
+import '../css/Tides.css';
+
+
+ReactChartkick.addAdapter(Chart);
+
+const data = [
+    {"name":"Workout", "data": {"2017-01-01": 3, "2017-01-02": 4, "2017-01-04": 1, "2017-01-12": -4}},
+];
 
 class Tides extends Component {
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            'dailyTides': [],
-        }
-    }
-
-
-
-    filterTides(){
-
+    filterTides() {
 
         let days = [];
 
@@ -28,9 +28,7 @@ class Tides extends Component {
                 // array empty or does not exist
                 days[thisDay] = [];
             }
-
             return days[thisDay][thisDayTime] = tide;
-
         });
 
         return days;
@@ -38,28 +36,20 @@ class Tides extends Component {
     }
 
 
-    setTideEvents() {
-
-        if(this.props.tides.length > 0){
-
-            console.log('we have tides');
-
-          //  return this.filterTides();
-            return this.props.tides;
-
-        }
-
-        return this.state.dailyTides;
-        }
-
     renderTideEvents() {
 
-        let tideEvents = this.setTideEvents(this.props.tides);
 
-        return tideEvents.map(tideEvent => {
+        const tideData = this.props.tides.map(tideEvent => {
+            return (
+                <TideEvent className="tideEvent" key={tideEvent.DateTime} tideEvent={tideEvent}>
+                </TideEvent>
+            )
+        });
+
+        return this.props.tides.map(tideEvent => {
 
             return (
-                <TideEvent className="tideEvent" key={tideEvent.DateTime} tideEvent={tideEvent}>Day
+                <TideEvent className="tideEvent" key={tideEvent.DateTime} tideEvent={tideEvent}>
                 </TideEvent>
             )
         });
@@ -69,7 +59,10 @@ class Tides extends Component {
     render() {
         return (
             <div className="tideEvents">
+                <div className="prev"> </div>
+                <LineChart data={data} />
                 {this.renderTideEvents()}
+                <div className="next"> </div>
             </div>
         )
     }

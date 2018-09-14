@@ -8,7 +8,13 @@ class HeightElement extends Component {
 
     render() {
 
-        let height = this.props.height;
+        if(!this.props.tideEvent.Height){
+            return (
+                <span>No data</span>
+            );
+        }
+
+        let height = this.props.tideEvent.Height;
 
         return (
             <span>

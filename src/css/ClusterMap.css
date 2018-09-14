@@ -1,5 +1,5 @@
 .ClusterMap {
-    height: 90vh;
+    height: 85vh;
     text-align: center;
 }
 
@@ -9,4 +9,8 @@
 
 .mapboxgl-popup {
     z-index: 999;
+}
+
+.marker {
+    border: none;
 }

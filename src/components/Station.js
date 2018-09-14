@@ -1,6 +1,5 @@
 import React, {Component} from "react";
-import './Station.css';
-import './Tides.css';
+import '../css/Station.css';
 
 import Tides from './Tides';
 
@@ -10,63 +9,44 @@ class Station extends Component {
         super(props);
 
         this.state = {
-            'tides': [],
-            'tideEvents': [{
-                "EventType": "LowWater",
-                "DateTime": "2018-09-01T03:10:00",
-                "IsApproximateTime": false,
-                "Height": 0.7043104892979013,
-                "IsApproximateHeight": false,
-                "Filtered": false
-            }, {
-                "EventType": "HighWater",
-                "DateTime": "2018-09-01T09:13:00",
-                "IsApproximateTime": false,
-                "Height": 2.5009092313149353,
-                "IsApproximateHeight": false,
-                "Filtered": false
-            }, {
-                "EventType": "LowWater",
-                "DateTime": "2018-09-01T15:27:00",
-                "IsApproximateTime": false,
-                "Height": 0.85204562782024429,
-                "IsApproximateHeight": false,
-                "Filtered": false
-            }, {
-                "EventType": "HighWater",
-                "DateTime": "2018-09-01T21:39:00",
-                "IsApproximateTime": false,
-                "Height": 2.5776968735219956,
-                "IsApproximateHeight": false,
-                "Filtered": false
-            }]
+            'tides': []
         }
     }
 
-    getStation = () => {
+    componentDidMount() {
+        console.log('station mounted');
+    }
 
-        console.log('loading' + this.props.currentStation)
+    componentDidUpdate(prevProps) {
 
-        this.setState({tides: this.state.tideEvents})
-
-        console.log(this.state.tides)
-
-
-    };
+        // unset tides if we change the currentStation
+        if (prevProps.currentStation !== this.props.currentStation) {
+            console.log('changed Station');
+        }
+    }
 
     render() {
 
         let button = '';
+        let tides = '';
 
         if (this.props.currentStation) {
-            button = <button onClick={this.getStation}>Load Station</button>;
+            button = <div className="buttons">
+                <button onClick={this.props.actionGetStation}>Tides</button>
+                <button onClick={this.props.actionAddFavorite}>+</button>
+                <button onClick={this.props.actionRemoveFavorite}>-</button>
+            </div>;
+        }
+
+        if (this.props.tides.length > 0) {
+            tides = <Tides tides={this.props.tides}/>
         }
 
         return (
             <div className="station">
                 {this.props.currentStation}
                 {button}
-                <Tides tides={this.state.tides}/>
+                {tides}
             </div>
         )
     }
