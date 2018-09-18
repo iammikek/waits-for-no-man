@@ -4,6 +4,8 @@ import {ReactMapboxGlCluster} from "react-mapbox-gl-cluster";
 import Station from "./Station";
 import "../css/ClusterMap.css";
 
+import moment from 'moment';
+
 const Map = ReactMapboxGl({
     accessToken: process.env.REACT_APP_TOKEN
 });
@@ -32,10 +34,11 @@ class ClusterMap extends Component {
             currentStationId: null,
             stations: {type: 'FeatureCollection', features: []},
             markerCoordinates: [0, 0],
+            nextEvent: [],
             favorites: [],
             tides: [],
             tideEvents: [],
-            api: 'https://api.brightstormhosts.co.uk/api/V1'
+            api: process.env.REACT_APP_API
         }
     }
 
@@ -43,8 +46,8 @@ class ClusterMap extends Component {
 
         this.getStations();
 
-      //  let currentStation = localStorage.getItem('currentStation');
-      //  let favorites = localStorage.getItem('favorites');
+        //  let currentStation = localStorage.getItem('currentStation');
+        //  let favorites = localStorage.getItem('favorites');
 
         //   if (currentStation !== null) {
         //     this.setCurrentStation(currentStation);
@@ -83,7 +86,7 @@ class ClusterMap extends Component {
 
         console.log('getTideEvents');
 
-        fetch(this.state.api + '/stations/' + this.state.currentStationId + '/events/4', {
+        fetch(this.state.api + '/stations/' + this.state.currentStationId + '/events/2', {
             method: 'GET'
         })
             .then(response => {
@@ -94,6 +97,9 @@ class ClusterMap extends Component {
             .then(tideEvents => {
                 this.setState({tideEvents});
                 console.log(tideEvents);
+
+                this.setNextEvent();
+
             })
     };
 
@@ -123,14 +129,49 @@ class ClusterMap extends Component {
             })
     };
 
+
+    setNextEvent() {
+
+        console.log('SET NEXT EVENT');
+
+        const tideData = this.state.tideEvents;
+
+        let data = {};
+
+        for (let i = 0; i < tideData.length; i++) {
+
+            let dateTime = tideData[i].DateTime ? tideData[i].DateTime.replace('T', ' ') : null;
+            let event = tideData[i].EventType.replace('Water', ' Water');
+            let isNext = moment().isAfter(dateTime);
+
+            data['event'] = event;
+            data['height'] = Boolean(tideData[i].Height) ? tideData[i].Height.toFixed(2) + 'm' : '';
+            data['isNext'] = isNext;
+            data['eventTime'] = moment(dateTime).isValid() ? ' at ' + moment(dateTime).format("HH:mm") : null;
+            data['inTime'] = moment(dateTime).isValid() ? moment(dateTime).fromNow() : null;
+
+            if (isNext === false) {
+                break;
+            }
+        }
+
+        this.setState({
+            nextEvent: data
+        });
+    }
+
+
     getEventHandlers() {
         return {
             onClick: (properties, coords, offset) => {
 
-                this.setState({markerCoordinates: coords});
+                this.setState({
+                    markerCoordinates: coords,
+                    nextEvent: []
+                });
 
                 this.setCurrentStation(properties);
-                this.getTideEvents();
+                this.getStation();
             },
         };
     }
@@ -145,13 +186,10 @@ class ClusterMap extends Component {
                          actionGetStation={this.getStation}
                          actionAddFavorite={this.addToFavorites}
                          actionRemoveFavorite={this.removeFromFavorites}
-                         tides={this.state.tides}
+                         nextEvent={this.state.nextEvent}
                 />
             </div>
         }
-
-
-        console.log(this.state.stations);
 
         //  return '';
 

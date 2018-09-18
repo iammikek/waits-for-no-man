@@ -1,19 +1,29 @@
 import React, {Component} from "react"
 import TideEvent from "./TideEvent"
 
-import ReactChartkick, { LineChart, PieChart } from 'react-chartkick'
+import ReactChartkick, {AreaChart, LineChart} from 'react-chartkick'
 import Chart from 'chart.js'
 
 import '../css/Tides.css';
 
-
 ReactChartkick.addAdapter(Chart);
 
-const data = [
-    {"name":"Workout", "data": {"2017-01-01": 3, "2017-01-02": 4, "2017-01-04": 1, "2017-01-12": -4}},
-];
-
 class Tides extends Component {
+
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            'tideData': [],
+            'tides': [],
+        }
+    }
+
+
+    componentDidUpdate(prevProps, prevState) {
+
+    }
 
     filterTides() {
 
@@ -35,16 +45,28 @@ class Tides extends Component {
 
     }
 
-
     renderTideEvents() {
 
+        const tideData = this.props.tides;
 
-        const tideData = this.props.tides.map(tideEvent => {
-            return (
-                <TideEvent className="tideEvent" key={tideEvent.DateTime} tideEvent={tideEvent}>
-                </TideEvent>
-            )
-        });
+        let data = {};
+
+        for (let i = 0; i < tideData.length; i++) {
+
+            let dateTime = tideData[i].DateTime.replace('T', ' ');
+            let height = tideData[i].Height;
+
+            if (Boolean(height)) {
+                height = height.toFixed(2);
+            }
+
+            data[dateTime] = height;
+        }
+
+        return (
+            <LineChart width="400px" height="100px" data={data}/>
+        );
+
 
         return this.props.tides.map(tideEvent => {
 
@@ -59,10 +81,11 @@ class Tides extends Component {
     render() {
         return (
             <div className="tideEvents">
-                <div className="prev"> </div>
-                <LineChart data={data} />
+                <div className="prev"></div>
+
+
                 {this.renderTideEvents()}
-                <div className="next"> </div>
+                <div className="next"></div>
             </div>
         )
     }

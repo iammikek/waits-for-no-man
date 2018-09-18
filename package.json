@@ -3,9 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "chart.js": "^2.7.2",
     "google-map-react": "^1.0.6",
     "mapbox-gl": "^0.48.0",
+    "moment": "^2.22.2",
     "react": "^16.4.2",
+    "react-chartkick": "^0.3.0",
     "react-dom": "^16.4.2",
     "react-google-map": "^3.1.1",
     "react-google-maps": "^9.4.5",
