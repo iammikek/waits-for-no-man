@@ -1,16 +1,80 @@
 .ClusterMap {
-    height: 85vh;
-    text-align: center;
-}
-
-.mapboxgl-map {
-    height: 100%;
-}
-
-.mapboxgl-popup {
+  height: 85vh;
+  text-align: center;
+  .message {
+    background: red;
+    color: #FFFFFF;
+    margin-top: 0;
+    padding: 10px;
     z-index: 999;
+    position: fixed;
+    width: 100%;
+    opacity: .5;
+  }
+
 }
 
-.marker {
+body {
+  .mapboxgl-map {
+    height: 100%;
+    font: 12px/20px 'Rosarivo', serif;
+  }
+
+  .mapboxgl-popup {
+    z-index: 999;
+    -webkit-perspective: 500px;
+    perspective: 500px;
+  }
+
+  .marker {
     border: none;
+  }
+
+  .mapboxgl-popup-anchor-top,
+  .mapboxgl-popup-anchor-top-left,
+  .mapboxgl-popup-anchor-top-right {
+    .mapboxgl-popup-content,
+    .mapboxgl-popup-tip {
+      -webkit-transform: rotateX(15deg) rotateY(0deg);
+      transform: rotateX(15deg) rotateY(0deg);
+    }
+
+    .mapboxgl-popup-content {
+      margin-top: -3px;
+    }
+  }
+
+  .mapboxgl-popup-anchor-bottom,
+  .mapboxgl-popup-anchor-bottom-left,
+  .mapboxgl-popup-anchor-bottom-right {
+    .mapboxgl-popup-content,
+    .mapboxgl-popup-tip {
+      position: relative;
+      -webkit-transform: rotateX(-15deg) rotateY(0deg);
+      transform: rotateX(-15deg) rotateY(0deg);
+    }
+    .mapboxgl-popup-tip {
+      margin-top: -3px;
+    }
+  }
+
+  .cluster-layer--cluster {
+    background-color: rgba(191, 115, 63, 0.8);
+    color: #000;
+    font-size: 1rem;
+    &:before {
+      background-color: rgba(237, 213, 183, 0.6);
+    }
+  }
+
+  .cluster-layer--point {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: rgba(150, 83, 27, 0.8);
+    border: 1px solid #ffffff;
+  }
 }
+
+
+

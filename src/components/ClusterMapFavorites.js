@@ -23,7 +23,7 @@ class ClusterMapFavorites extends Component {
 
             console.log(favorites);
 
-         this.setState({favorites: JSON.parse(favorites)})
+            this.setState({favorites: JSON.parse(favorites)})
         }
 
     }

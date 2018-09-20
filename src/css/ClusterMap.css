@@ -1,16 +1,61 @@
 .ClusterMap {
-    height: 85vh;
-    text-align: center;
-}
-
-.mapboxgl-map {
-    height: 100%;
-}
-
-.mapboxgl-popup {
+  height: 85vh;
+  text-align: center; }
+  .ClusterMap .message {
+    background: red;
+    color: #FFFFFF;
+    margin-top: 0;
+    padding: 10px;
     z-index: 999;
-}
+    position: fixed;
+    width: 100%;
+    opacity: .5; }
 
-.marker {
-    border: none;
-}
+body .mapboxgl-map {
+  height: 100%;
+  font: 12px/20px 'Rosarivo', serif; }
+body .mapboxgl-popup {
+  z-index: 999;
+  -webkit-perspective: 500px;
+  perspective: 500px; }
+body .marker {
+  border: none; }
+body .mapboxgl-popup-anchor-top .mapboxgl-popup-content,
+body .mapboxgl-popup-anchor-top .mapboxgl-popup-tip,
+body .mapboxgl-popup-anchor-top-left .mapboxgl-popup-content,
+body .mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip,
+body .mapboxgl-popup-anchor-top-right .mapboxgl-popup-content,
+body .mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {
+  -webkit-transform: rotateX(15deg) rotateY(0deg);
+  transform: rotateX(15deg) rotateY(0deg); }
+body .mapboxgl-popup-anchor-top .mapboxgl-popup-content,
+body .mapboxgl-popup-anchor-top-left .mapboxgl-popup-content,
+body .mapboxgl-popup-anchor-top-right .mapboxgl-popup-content {
+  margin-top: -3px; }
+body .mapboxgl-popup-anchor-bottom .mapboxgl-popup-content,
+body .mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip,
+body .mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-content,
+body .mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip,
+body .mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-content,
+body .mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {
+  position: relative;
+  -webkit-transform: rotateX(-15deg) rotateY(0deg);
+  transform: rotateX(-15deg) rotateY(0deg); }
+body .mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip,
+body .mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip,
+body .mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {
+  margin-top: -3px; }
+body .cluster-layer--cluster {
+  background-color: rgba(191, 115, 63, 0.8);
+  color: #000;
+  font-size: 1rem; }
+  body .cluster-layer--cluster:before {
+    background-color: rgba(237, 213, 183, 0.6); }
+body .cluster-layer--point {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: rgba(150, 83, 27, 0.8);
+  border: 1px solid #ffffff; }
+
+/*# sourceMappingURL=ClusterMap.css.map */

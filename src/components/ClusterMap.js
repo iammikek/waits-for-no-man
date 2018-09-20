@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import ReactMapboxGl, {ZoomControl, ScaleControl, Marker, Popup} from "react-mapbox-gl";
+import ReactMapboxGl, {ZoomControl, ScaleControl, Marker, Popup, RotationControl} from "react-mapbox-gl";
 import {ReactMapboxGlCluster} from "react-mapbox-gl-cluster";
 import Station from "./Station";
 import "../css/ClusterMap.css";
@@ -15,8 +15,19 @@ const mapProps = {
         lat: 53.4893,
         lng: -5.7099
     },
-    zoom: [4],
-    style: "mapbox://styles/mapbox/streets-v8"
+    pitch: [30], // pitch in degrees
+    bearing: [0], // bearing in degrees
+    zoom: [5],
+    style: "mapbox://styles/brightstormltd/cjmaltjaygsb92sqqpg2b5i3j"
+};
+
+const FetchOptions = {
+    method: 'GET',
+    withCredentials: true,
+    credentials: 'omit',
+    headers: {
+        'X-AUTH-TOKEN': process.env.REACT_APP_API_TOKEN
+    }
 };
 
 class ClusterMap extends Component {
@@ -30,15 +41,19 @@ class ClusterMap extends Component {
         this.getStation = this.getStation.bind(this);
 
         this.state = {
+            api: process.env.REACT_APP_API,
+            proxyUrl: process.env.REACT_APP_PROXY,
+            apiToken: process.env.REACT_APP_API_TOKEN,
             currentStation: null,
             currentStationId: null,
-            stations: {type: 'FeatureCollection', features: []},
+            stations: {
+                type: 'FeatureCollection', features: []
+            },
             markerCoordinates: [0, 0],
             nextEvent: [],
             favorites: [],
             tides: [],
-            tideEvents: [],
-            api: process.env.REACT_APP_API
+            tideEvents: []
         }
     }
 
@@ -86,9 +101,11 @@ class ClusterMap extends Component {
 
         console.log('getTideEvents');
 
-        fetch(this.state.api + '/stations/' + this.state.currentStationId + '/events/2', {
-            method: 'GET'
-        })
+        let targetUrl = this.state.api + '/stations/' + this.state.currentStationId + '/events/2';
+
+        console.log(FetchOptions);
+
+        fetch(this.state.proxyUrl + targetUrl, FetchOptions)
             .then(response => {
                 return response.json();
             }, function (error) {
@@ -113,17 +130,30 @@ class ClusterMap extends Component {
     getStations = () => {
 
         console.log('getStations');
-        console.log(this.state.api + '/stations');
 
-        fetch(this.state.api + '/stations', {
-            method: 'GET'
-        })
+        let targetUrl = this.state.api + '/stations';
+
+        console.log(FetchOptions);
+
+        fetch(this.state.proxyUrl + targetUrl, FetchOptions)
             .then(response => {
+
+                if (response.status === 401) {
+                    this.setState({error: 'Cannot connect to API'});
+                    return this.state.stations;
+                }
+
                 return response.json();
             }, function (error) {
-                console.log(error.message) //=> String
+                console.log(error.message); //=> String
             })
             .then(stations => {
+
+                if (stations === undefined) {
+                    this.setState({error: 'API returns no data'});
+                    return {};
+                }
+
                 this.setState({stations});
                 console.log(stations);
             })
@@ -160,9 +190,17 @@ class ClusterMap extends Component {
         });
     }
 
-
     getEventHandlers() {
         return {
+            onDragStart: (properties, coords, offset) => {
+                console.log('drag');
+                this.setState({
+                    currentStation: null,
+                    currentStationId: null,
+                    markerCoordinates: null,
+                    tides: []
+                });
+            },
             onClick: (properties, coords, offset) => {
 
                 this.setState({
@@ -183,18 +221,19 @@ class ClusterMap extends Component {
         if (this.state.markerCoordinates.length > 0) {
             markerTarget = <div className="target">
                 <Station currentStation={this.state.currentStation}
+                         nextEvent={this.state.nextEvent}
                          actionGetStation={this.getStation}
                          actionAddFavorite={this.addToFavorites}
                          actionRemoveFavorite={this.removeFromFavorites}
-                         nextEvent={this.state.nextEvent}
                 />
             </div>
         }
 
-        //  return '';
-
         return (
             <div className="ClusterMap">
+                {this.state.error && (
+                    <div className='message'>{this.state.error}</div>
+                )}
                 <Map {...mapProps} onStyleLoad={this.onStyleLoad}>
                     <ReactMapboxGlCluster
                         data={this.state.stations}
@@ -203,12 +242,7 @@ class ClusterMap extends Component {
                     </ReactMapboxGlCluster>
                     <ZoomControl/>
                     <ScaleControl/>
-                    <Marker className='marker'
-                            coordinates={this.state.markerCoordinates}
-                            anchor="bottom"
-                    >
-                    </Marker>
-
+                    <RotationControl/>
                     {this.state.currentStationId && (
                         <Popup key={this.state.currentStationId}
                                coordinates={this.state.markerCoordinates}>
